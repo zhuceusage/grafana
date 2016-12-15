@@ -16,23 +16,42 @@ export class NavModel {
     };
   }
 
-  getDashboardNav(dashboard) {
+  getDashboardNav(dashboard, dashNav) {
     return {
       section: {
         title: dashboard.title,
         icon: 'icon-gf icon-gf-dashboard'
       },
       navItems: [
-        {title: 'Settings', click: '', icon: 'fa fa-cog'},
-        {title: 'Templating', click: '', icon: 'fa fa-code'},
-        {title: 'Annotations', click: '', icon: 'fa fa-bolt'},
-        {title: 'View JSON', click: '', icon: 'fa fa-eye'},
-        {title: 'Save As', click: '', icon: 'fa fa-save'},
+        {
+          title: 'Settings',
+          icon: 'fa fa-cog',
+          clickHandler: () => dashNav.openEditView('settings'),
+        },
+        {
+          title: 'Templating',
+          icon: 'fa fa-code',
+          clickHandler: () => dashNav.openEditView('templating'),
+        },
+        {
+          title: 'Annotations',
+          clickHandler: () => dashNav.openEditView('annotations'),
+          icon: 'fa fa-bolt'
+        },
+        {
+          title: 'View JSON',
+          icon: 'fa fa-eye',
+          clickHandler: () => dashNav.viewJson(),
+        },
+        {
+          title: 'Save As',
+          icon: 'fa fa-save',
+          clickHandler: () => dashNav.saveDashboardAs(),
+        },
       ]
     };
   }
 }
-
 
 var navModel = new NavModel();
 export {navModel};

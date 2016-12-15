@@ -123,7 +123,7 @@
   background-image: linear-gradient(to bottom, #1f1f1f, #333333);
   background-repeat: repeat-x;
 
-  &:hover {
+  &:hover, &.active {
     background: $side-menu-bg;
     color: $link-color;
   }
@@ -218,7 +218,17 @@
   }
 }
 
+.sidemenu-open {
+  .navbar-brand-btn {
+    background: $side-menu-bg;
+  }
+}
+
 .navbar-section-wrapper {
   position: relative;
   float: left;
+
+  &.open .navbar-page-btn {
+    background: $side-menu-bg;
+  }
 }

@@ -25,7 +25,6 @@ export function navBarMenu() {
       iconUrl: "@",
     },
     link: function(scope, elem) {
-
       // elem.click(function() {
       //   elem.toggleClass('navbar-page-btn--open');
       // });

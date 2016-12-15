@@ -13,14 +13,22 @@ export class NavbarCtrl {
   isSearching: boolean;
 
   /** @ngInject */
-  constructor(private $rootScope, private contextSrv) {
+  constructor(private $scope, private $rootScope, private contextSrv) {
     this.section = this.model.section;
+
+    $rootScope.onAppEvent('show-dash-search', () => this.isSearching = true, $scope);
+    $rootScope.onAppEvent('hide-dash-search', () => this.isSearching = false, $scope);
   }
 
   showSearch() {
-    console.log('show search');
     this.$rootScope.appEvent('show-dash-search');
-    this.isSearching = !this.isSearching;
+  }
+
+  navItemClicked(navItem, evt) {
+    if (navItem.clickHandler) {
+      navItem.clickHandler();
+      evt.preventDefault();
+    }
   }
 }
 

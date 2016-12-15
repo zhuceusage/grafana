@@ -13,7 +13,7 @@ export class DashNavCtrl {
   constructor($scope, $rootScope, dashboardSrv, $location, playlistSrv, backendSrv, $timeout, datasourceSrv) {
 
     $scope.init = function() {
-      $scope.navModel = navModel.getDashboardNav($scope.dashboard);
+      $scope.navModel = navModel.getDashboardNav($scope.dashboard, $scope);
 
       $scope.onAppEvent('save-dashboard', $scope.saveDashboard);
       $scope.onAppEvent('delete-dashboard', $scope.deleteDashboard);
@@ -72,7 +72,6 @@ export class DashNavCtrl {
 
     $scope.hideTooltip = function(evt) {
       angular.element(evt.currentTarget).tooltip('hide');
-      $scope.appEvent('hide-dash-search');
     };
 
     $scope.makeEditable = function() {
