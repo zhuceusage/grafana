@@ -16,12 +16,13 @@ import (
 )
 
 var (
-	DataSources  map[string]*DataSourcePlugin
-	Panels       map[string]*PanelPlugin
-	StaticRoutes []*PluginStaticRoute
-	Apps         map[string]*AppPlugin
-	Plugins      map[string]*PluginBase
-	PluginTypes  map[string]interface{}
+	DataSources          map[string]*DataSourcePlugin
+	Panels               map[string]*PanelPlugin
+	StaticRoutes         []*PluginStaticRoute
+	Apps                 map[string]*AppPlugin
+	Plugins              map[string]*PluginBase
+	AlertNotifierPlugins map[string]*AlertNotifierPlugin
+	PluginTypes          map[string]interface{}
 
 	GrafanaLatestVersion string
 	GrafanaHasUpdate     bool
@@ -41,10 +42,12 @@ func Init() error {
 	Panels = make(map[string]*PanelPlugin)
 	Apps = make(map[string]*AppPlugin)
 	Plugins = make(map[string]*PluginBase)
+	AlertNotifierPlugins = make(map[string]*AlertNotifierPlugin)
 	PluginTypes = map[string]interface{}{
-		"panel":      PanelPlugin{},
-		"datasource": DataSourcePlugin{},
-		"app":        AppPlugin{},
+		"panel":          PanelPlugin{},
+		"datasource":     DataSourcePlugin{},
+		"app":            AppPlugin{},
+		"alert-notifier": AlertNotifierPlugin{},
 	}
 
 	plog.Info("Starting plugin search")
@@ -69,11 +72,14 @@ func Init() error {
 	for _, panel := range Panels {
 		panel.initFrontendPlugin()
 	}
-	for _, panel := range DataSources {
-		panel.initFrontendPlugin()
+	for _, ds := range DataSources {
+		ds.initFrontendPlugin()
 	}
 	for _, app := range Apps {
 		app.initApp()
+	}
+	for _, notifier := range AlertNotifierPlugins {
+		notifier.init()
 	}
 
 	go StartPluginUpdateChecker()
