@@ -5,14 +5,30 @@ import _ from 'lodash';
 import $ from 'jquery';
 import coreModule from '../../core_module';
 
+import './menu';
+
 export class NavbarCtrl {
+  model: any;
+  section: any;
+  isSearching: boolean;
 
   /** @ngInject */
-  constructor(private $rootScope, private contextSrv) {
+  constructor(private $scope, private $rootScope, private contextSrv) {
+    this.section = this.model.section;
+
+    $rootScope.onAppEvent('show-dash-search', () => this.isSearching = true, $scope);
+    $rootScope.onAppEvent('hide-dash-search', () => this.isSearching = false, $scope);
   }
 
   showSearch() {
     this.$rootScope.appEvent('show-dash-search');
+  }
+
+  navItemClicked(navItem, evt) {
+    if (navItem.clickHandler) {
+      navItem.clickHandler();
+      evt.preventDefault();
+    }
   }
 }
 
@@ -25,12 +41,9 @@ export function navbarDirective() {
     transclude: true,
     controllerAs: 'ctrl',
     scope: {
-      title: "@",
-      titleUrl: "@",
-      iconUrl: "@",
+      model: "=",
     },
-    link: function(scope, elem, attrs, ctrl) {
-      ctrl.icon = attrs.icon;
+    link: function(scope, elem) {
       elem.addClass('navbar');
     }
   };

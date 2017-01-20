@@ -169,6 +169,7 @@ export function searchDirective() {
     controller: SearchCtrl,
     bindToController: true,
     controllerAs: 'ctrl',
+    scope: {},
   };
 }
 

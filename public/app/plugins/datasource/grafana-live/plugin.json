@@ -2,6 +2,5 @@
   "type": "datasource",
   "name": "Grafana Live",
   "id": "grafana-live",
-
   "metrics": true
 }

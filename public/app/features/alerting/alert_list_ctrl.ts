@@ -2,13 +2,17 @@
 
 import angular from 'angular';
 import _ from 'lodash';
-import coreModule from '../../core/core_module';
-import appEvents from '../../core/app_events';
 import moment from 'moment';
+
+import {
+  coreModule,
+  appEvents,
+  navModel,
+} from  'app/core/core';
+
 import alertDef from './alert_def';
 
 export class AlertListCtrl {
-
   alerts: any;
   stateFilters = [
     {text: 'All', value: null},
@@ -16,13 +20,15 @@ export class AlertListCtrl {
     {text: 'Alerting', value: 'alerting'},
     {text: 'No Data', value: 'no_data'},
   ];
-
   filters = {
     state: 'ALL'
   };
+  navModel: any;
 
   /** @ngInject */
   constructor(private backendSrv, private $location, private $scope) {
+    this.navModel = navModel.getAlertingNav(0);
+
     var params = $location.search();
     this.filters.state = params.state || null;
     this.loadAlerts();

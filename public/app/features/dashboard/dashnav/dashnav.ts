@@ -3,10 +3,9 @@
 import _ from 'lodash';
 import moment from 'moment';
 import angular from 'angular';
+import {navModel} from 'app/core/core';
 
 import {DashboardExporter} from '../export/exporter';
-
-import './menu';
 
 export class DashNavCtrl {
 
@@ -14,6 +13,8 @@ export class DashNavCtrl {
   constructor($scope, $rootScope, dashboardSrv, $location, playlistSrv, backendSrv, $timeout, datasourceSrv) {
 
     $scope.init = function() {
+      $scope.navModel = navModel.getDashboardNav($scope.dashboard, $scope);
+
       $scope.onAppEvent('save-dashboard', $scope.saveDashboard);
       $scope.onAppEvent('delete-dashboard', $scope.deleteDashboard);
       $scope.onAppEvent('quick-snapshot', $scope.quickSnapshot);
@@ -71,7 +72,6 @@ export class DashNavCtrl {
 
     $scope.hideTooltip = function(evt) {
       angular.element(evt.currentTarget).tooltip('hide');
-      $scope.appEvent('hide-dash-search');
     };
 
     $scope.makeEditable = function() {

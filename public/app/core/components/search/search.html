@@ -1,9 +1,13 @@
 <div class="search-container" ng-if="ctrl.isOpen">
+
 	<div class="search-field-wrapper">
-		<span style="position: relative;">
-			<input  type="text" placeholder="Find dashboards by name" give-focus="ctrl.giveSearchFocus" tabindex="1"
-			ng-keydown="ctrl.keyDown($event)" ng-model="ctrl.query.query" ng-model-options="{ debounce: 500 }" spellcheck='false' ng-change="ctrl.search()" />
-		</span>
+		<input type="text" placeholder="Find dashboards by name" give-focus="ctrl.giveSearchFocus" tabindex="1"
+						ng-keydown="ctrl.keyDown($event)"
+						ng-model="ctrl.query.query"
+						ng-model-options="{ debounce: 500 }"
+						spellcheck='false'
+						ng-change="ctrl.search()" />
+
 		<div class="search-switches">
 			<i class="fa fa-filter"></i>
 			<a class="pointer" href="javascript:void 0;" ng-click="ctrl.showStarred()" tabindex="2">
