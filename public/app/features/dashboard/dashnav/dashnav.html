@@ -12,6 +12,18 @@
 <!-- 	</span> -->
 <!-- </a> -->
 
+<ul class="nav dash-playlist-actions" ng-if="playlistSrv">
+	<li>
+		<a ng-click="playlistSrv.prev()"><i class="fa fa-step-backward"></i></a>
+	</li>
+	<li>
+		<a ng-click="playlistSrv.stop()"><i class="fa fa-stop"></i></a>
+	</li>
+	<li>
+		<a ng-click="playlistSrv.next()"><i class="fa fa-step-forward"></i></a>
+	</li>
+</ul>
+
 <ul class="nav pull-left dashnav-action-icons">
 	<li ng-show="::dashboardMeta.canStar">
 		<a class="pointer" ng-click="starDashboard()">
@@ -46,18 +58,6 @@
 	</li>
 	<li ng-if="dashboard.snapshot.originalUrl">
 		<a ng-href="{{dashboard.snapshot.originalUrl}}" bs-tooltip="'Open original dashboard'" data-placement="bottom"><i class="fa fa-link"></i></a>
-	</li>
-</ul>
-
-<ul class="nav dash-playlist-actions" ng-if="playlistSrv">
-	<li>
-		<a ng-click="playlistSrv.prev()"><i class="fa fa-step-backward"></i></a>
-	</li>
-	<li>
-		<a ng-click="playlistSrv.stop()"><i class="fa fa-stop"></i></a>
-	</li>
-	<li>
-		<a ng-click="playlistSrv.next()"><i class="fa fa-step-forward"></i></a>
 	</li>
 </ul>
 
