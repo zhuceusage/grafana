@@ -9,9 +9,7 @@ class TestDataDatasource {
   constructor(private backendSrv, private $q) {}
 
   query(options) {
-    var queries = _.filter(options.targets, item => {
-      return item.hide !== true;
-    }).map(item => {
+    var queries = _.map(options.targets, item => {
       return {
         refId: item.refId,
         scenarioId: item.scenarioId,

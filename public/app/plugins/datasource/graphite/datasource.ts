@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import * as dateMath from 'app/core/utils/datemath';
 
-/** @ngInject */
+/** @ngInject **/
 export function GraphiteDatasource(instanceSettings, $q, backendSrv, templateSrv) {
   this.basicAuth = instanceSettings.basicAuth;
   this.url = instanceSettings.url;
@@ -14,36 +14,40 @@ export function GraphiteDatasource(instanceSettings, $q, backendSrv, templateSrv
   this.cacheTimeout = instanceSettings.cacheTimeout;
   this.withCredentials = instanceSettings.withCredentials;
   this.render_method = instanceSettings.render_method || 'POST';
+  this.instanceSettings = instanceSettings;
 
   this.query = function(options) {
-    var graphOptions = {
-      from: this.translateTime(options.rangeRaw.from, false),
-      until: this.translateTime(options.rangeRaw.to, true),
-      targets: options.targets,
-      format: options.format,
-      cacheTimeout: options.cacheTimeout || this.cacheTimeout,
-      maxDataPoints: options.maxDataPoints,
+    var queries = _.filter(options.targets, item => {
+      return item.hide !== true;
+    }).map(item => {
+      return {
+        refId: item.refId,
+        intervalMs: options.intervalMs,
+        maxDataPoints: options.maxDataPoints,
+        target: item.targetFull,
+      };
+    });
+
+    var request = {
+      from: options.rangeRaw.from,
+      until: options.rangeRaw.to,
+      queries: queries,
+      datasourceId: this.instanceSettings.id,
     };
 
-    var params = this.buildGraphiteParams(graphOptions, options.scopedVars);
-    if (params.length === 0) {
-      return $q.when({data: []});
-    }
+    return backendSrv.post('/api/tsdb/query', request).then(res => {
+      var data = [];
 
-    var httpOptions: any = {
-      method: 'POST',
-      url: '/render',
-      data: params.join('&'),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-    };
+      if (res.results) {
+        _.forEach(res.results, queryRes => {
+          for (let series of queryRes.series) {
+            data.push({target: series.name, datapoints: series.points});
+          }
+        });
+      }
 
-    if (options.panelId) {
-      httpOptions.requestId = this.name + '.panelId.' + options.panelId;
-    }
-
-    return this.doGraphiteRequest(httpOptions).then(this.convertDataPointsToMs);
+      return {data: data};
+    });
   };
 
   this.convertDataPointsToMs = function(result) {
