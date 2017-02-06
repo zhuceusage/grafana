@@ -36,7 +36,10 @@ func (bg *Batch) process(ctx context.Context, queryContext *QueryContext) {
 		return
 	}
 
-	res := executor.Execute(ctx, bg.Queries, queryContext)
+	res := executor.Execute(ctx, &Request{
+		Queries:   bg.Queries,
+		TimeRange: queryContext.TimeRange,
+	})
 	bg.Done = true
 	queryContext.ResultsChan <- res
 }

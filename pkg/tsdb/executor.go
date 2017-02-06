@@ -8,7 +8,7 @@ import (
 )
 
 type Executor interface {
-	Execute(ctx context.Context, queries QuerySlice, query *QueryContext) *BatchResult
+	Execute(ctx context.Context, req *Request) *BatchResult
 }
 
 var registry map[string]GetExecutorFn

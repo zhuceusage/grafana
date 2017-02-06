@@ -46,17 +46,17 @@ func init() {
 	tsdb.RegisterExecutor("graphite", NewGraphiteExecutor)
 }
 
-func (e *GraphiteExecutor) Execute(ctx context.Context, queries tsdb.QuerySlice, context *tsdb.QueryContext) *tsdb.BatchResult {
+func (e *GraphiteExecutor) Execute(ctx context.Context, tsdbRequest *tsdb.Request) *tsdb.BatchResult {
 	result := &tsdb.BatchResult{}
 
 	formData := url.Values{
-		"from":          []string{"-" + formatTimeRange(context.TimeRange.From)},
-		"until":         []string{formatTimeRange(context.TimeRange.To)},
+		"from":          []string{"-" + formatTimeRange(tsdbRequest.TimeRange.From)},
+		"until":         []string{formatTimeRange(tsdbRequest.TimeRange.To)},
 		"format":        []string{"json"},
 		"maxDataPoints": []string{"500"},
 	}
 
-	for _, query := range queries {
+	for _, query := range tsdbRequest.Queries {
 		if fullTarget, err := query.Model.Get("targetFull").String(); err == nil {
 			formData["target"] = []string{fixIntervalFormat(fullTarget)}
 		} else {
