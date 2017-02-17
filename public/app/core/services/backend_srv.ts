@@ -137,14 +137,23 @@ export class BackendSrv {
       delete options.headers.Authorization;
     }
 
+    var firstChunk = null;
+    var secondChunk = null;
     options.eventHandlers = {
-      "progress": function() {
-        console.log('progress called', arguments);
+      "progress": function(evt) {
+        var request = evt.target;
+        if (!firstChunk) {
+          firstChunk = request.responseText;
+        } else {
+          secondChunk = request.responseText;
+        }
+        console.log('progress called', evt);
       }
     };
 
-
     return this.$http(options).catch(err => {
+      console.log('http error', err);
+
       if (err.status === this.HTTP_REQUEST_CANCELLED) {
         throw {err, cancelled: true};
       }
