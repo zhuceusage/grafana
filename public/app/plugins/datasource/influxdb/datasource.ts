@@ -90,6 +90,8 @@ export default class InfluxDatasource {
         return [];
       }
 
+      console.log('influx query response', data);
+
       var seriesList = [];
       for (i = 0; i < data.results.length; i++) {
         var result = data.results[i];
