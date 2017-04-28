@@ -35,11 +35,6 @@ type GetNodeCmd struct {
 	Result *ActiveNode
 }
 
-type GetNodePartitionNumberCommand struct {
-	Node   *ActiveNode
-	Result int32
-}
-
 type GetLastHeartbeatCommand struct {
 	Node   *ActiveNode
 	Result int64
