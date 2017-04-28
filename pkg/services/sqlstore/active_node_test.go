@@ -50,5 +50,29 @@ func TestActiveNode(t *testing.T) {
 			So(cmd2.Result.AlertRunType, ShouldEqual, m.MISSING_ALERT)
 		})
 
+		// test active node count
+		cmd3 := m.GetLastHeartbeatCommand {
+			Node:	&act,
+		}
+		err3 := GetLastHeartbeat(&cmd3)
+		Convey("Can  get last heartbeat", func() {
+			So(err3, ShouldBeNil)
+		})
+		Convey("getting last heartbeat", func() {			
+			So(cmd3.Result, ShouldNotBeNil)			
+		})
+
+		// cmd4 := m.GetActiveNodesCountCommand {
+		// 	NodeId:		cmd3.Node.NodeId,
+		// 	Heartbeat: 	cmd3.Result,
+		// }
+
+		// err4 := GetActiveNodesCount(&cmd4)
+		// Convey("Can  get active node count", func() {
+		// 	So(err4, ShouldBeNil)
+		// })
+		// Convey("getting active node count", func() {			
+		// 	So(cmd4.Result, ShouldNotBeNil)			
+		// })
 	})
 }

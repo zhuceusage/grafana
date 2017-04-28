@@ -110,18 +110,36 @@ func (node *ClusterNode) CheckInNodeProcessingMissingAlerts() error {
 	return nil
 }
 
-func (node *ClusterNode) GetActiveNodesCount(ts int64) (int, error) {
+func (node *ClusterNode) GetActiveNodesCount(heartbeat int64) (int, error) {
 	if node == nil {
 		return 0, errors.New("Cluster node object is nil")
 	}
-	//TODO
-	return 0, errors.New("Not implemented")
+	cmd := &m.GetActiveNodesCountCommand{
+		NodeId:    node.nodeId,
+		Heartbeat: heartbeat,
+	}	
+	node.log.Debug("Sending command ", "GetActiveNodesCountCommand:Node", cmd.NodeId)
+	if err := bus.Dispatch(cmd); err != nil {
+		errmsg := fmt.Sprintf("Failed to get active node count %v", cmd.NodeId)
+		node.log.Error(errmsg, "error", err)
+		return 0, err
+	}
+	node.log.Debug("GetActiveNodesCountCommand executed successfully")
+	return cmd.Result, nil
 }
 
 func (node *ClusterNode) GetLastHeartbeat() (int64, error) {
 	if node == nil {
 		return 0, errors.New("Cluster node object is nil")
 	}
-	//TODO
-	return 0, errors.New("Not implemented")
+	cmd := &m.GetLastHeartbeatCommand{}
+	cmd.Node = &m.ActiveNode{NodeId: node.nodeId}
+	node.log.Debug("Sending command ", "GetLastHeartbeatCommand:Node", cmd.Node)
+	if err := bus.Dispatch(cmd); err != nil {
+		errmsg := fmt.Sprintf("Failed to get last heartbeat %v", cmd.Node)
+		node.log.Error(errmsg, "error", err)
+		return 0, err
+	}
+	node.log.Debug("GetLastHeartbeatCommand executed successfully")
+	return cmd.Result, nil
 }

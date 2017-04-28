@@ -17,7 +17,9 @@ var (
 func init() {
 	bus.AddHandler("sql", GetActiveNodeByIdHeartbeat)
 	bus.AddHandler("sql", InsertActiveNodeHeartbeat)
-	bus.AddHandler("sql", InsertNodeProcessingMissingAlert)
+	bus.AddHandler("sql", InsertNodeProcessingMissingAlert)	
+	bus.AddHandler("sql", GetLastHeartbeat)
+	bus.AddHandler("sql", GetActiveNodesCount)
 }
 
 func GetActiveNodeByIdHeartbeat(query *m.GetActiveNodeByIdHeartbeatQuery) error {
@@ -103,4 +105,38 @@ func InsertNodeProcessingMissingAlert(cmd *m.SaveNodeProcessingMissingAlertComma
 		cmd.Result = nodeProcessingMissingAlert
 		return nil
 	})
+}
+
+func GetLastHeartbeat(cmd *m.GetLastHeartbeatCommand) error {
+	results, err := x.Query("select " + dialect.CurrentTimeToRoundMinSql() + " as ts ")
+	if err != nil {
+		sqlog.Error("Failed to get timestamp", "error", err)
+		return err
+	}
+	ts, err := strconv.ParseInt(string(results[0]["ts"]), 10, 64)
+	if err != nil {
+		sqlog.Error("Failed to get timestamp", "error", err)
+		return err
+	}
+	sqlog.Debug("Recieved latest active node heartbeat for node", "nodeId", cmd.Node.NodeId)
+	cmd.Result = (ts - 60)
+	return nil
+}
+
+func GetActiveNodesCount(cmd *m.GetActiveNodesCountCommand) error {
+	// todo: use count
+	var actNodes []m.ActiveNode
+	err := x.Where("heartbeat=?", cmd.Heartbeat).Find(&actNodes)
+	if err != nil || (len(actNodes) == 0) {
+		errmsg := fmt.Sprintf("Failed to get node count for heartbeat=%d", cmd.Heartbeat)
+		if err == nil {
+			err = errors.New(errmsg)
+			sqlog.Error(errmsg)
+		} else {
+			sqlog.Error(errmsg, "error", err)
+		}
+		return err
+	}
+	cmd.Result = len(actNodes)
+	return nil
 }
